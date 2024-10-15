@@ -1,5 +1,6 @@
 #!/bin/sh
 
 git add .
-git commit -m '${date +"%Y%m%d:%H"}'
+TODAY=$(date "+%G:%H")
+git commit -m "${TODAY}"
 git push
