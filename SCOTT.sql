@@ -1,0 +1,176 @@
+--
+
+
+
+SELECT * FROM EMP;
+
+-- 특정 컬럼만 선택해서 조회
+SELECT EMPNO, ENAME, DEPTNO FROM EMP;
+
+--  사원번호와 부서번호만 나오도록 SQL 작성
+SELECT EMPNO, DEPTNO FROM EMP;
+
+-- 한눈에 보기 좋게 별칭 부여하기
+SELECT ENAME, SAL, COMM, SAL * 12 + COMM
+        FROM EMP;
+        
+SELECT ENAME "사원 이름", SAL AS "급여", COMM AS "성과급", SAL * 12 "연봉"
+        FROM EMP;
+
+-- 중복 제거하는 DISTINCT, 데이터를 조회할 때 중복되는 행이 여러 행이 조회 될 때, 중복된 행을 한 개씩만 선택
+SELECT DISTINCT deptno 
+FROM EMP
+ORDER BY DEPTNO;
+
+-- 컬럼값을 계산하는 산술 연산자
+SELECT ename, sal, sal * 12, sal * 12 + comm
+    FROM EMP;
+    
+-- 연습문제 :  job을 중복제거하고 출력하기
+SELECT DISTINCT job FROM EMP;
+
+-- WHERE 구문 (조건문)
+-- 데이터 조회할 때 사용자 원하는 조건에 맞는 데이터만 조회할 때 사용
+SELECT * FROM EMP	-- 먼저 테이블 선택되고, WHERE 절에서 행을 제한하고, 출력할 열을 결정
+WHERE DEPTNO = 20;
+
+-- 사원번호가 7369인 사원의 모든 정보를 보여줘.
+SELECT * FROM EMP 
+WHERE EMPNO = 7369; -- 데이터베이스에서 비교는 =(같다) 라는 의미로 사용됨
+
+
+-- 급여가 2500 초과인 사원번호, 이름, 직책, 급여 출력
+-- emp 테이블에서 급여가 2500 초과인 행을 선택하고, 사원번호, 사원이름, 직책, 급여에 컬럼을 선택해 출력
+SELECT empno, ename, job, sal 
+	FROM EMP
+	WHERE sal > 2500;
+
+-- WHERE 절에 기본연산자 사용
+-- 나중 내용
+SELECT e.ename, d.DEPTNO 
+	FROM EMP e JOIN DEPT d
+	ON e.DEPTNO = d.DEPTNO
+-- 나중 내용
+
+SELECT * FROM EMP
+	WHERE sal * 12 = 36000;
+
+-- WHERE 절에 사용하는 비교 연산자 : <, >, >=, <=
+-- 성과급이 500 초과인 사람의 모든 정보 출력
+SELECT * FROM EMP 
+	WHERE comm > 500;
+
+-- 입사일이 81년 1월 1일 이전인 사람의 모든 정보 출력하기
+SELECT * FROM EMP 
+	WHERE HIREDATE  < '81/01/01'; -- DB의 문자열 비교시는 '', DATE 타입은 날짜의 형식에 맞으면 가능
+	
+-- 같지 않음을 표현하는 여러가지 방법 : <>, !=, ^=, NOT 컬럼명 = 
+SELECT * FROM EMP 
+	--WHERE DEPTNO <> 30;
+	--WHERE DEPTNO != 30; : 기억하기
+	--WHERE DEPTNO ^= 30;
+	WHERE NOT DEPTNO = 30;	-- 기억하기
+
+-- 논리 연산자 : AND, OR, NOT
+-- 급여가 3000 이상이고 부서가 20번인 사원의 모든 정보 출력하기
+SELECT * FROM EMP
+	WHERE sal >= 3000 AND DEPTNO = 20;
+
+-- 급여가 3000 이상이거나 부서가 20번인 사원의 모든 정보를 출력하기
+SELECT * FROM EMP
+	WHERE sal >= 3000 OR DEPTNO = 20;
+
+-- 급여가 3000 이상이고, 부서가 20번이고, 입사일이 82년 1월 1일 이전인 사원의 모든 정보 출력
+SELECT * FROM EMP
+	WHERE sal >= 3000 AND DEPTNO = 20 AND HIREDATE < '82/01/01';
+
+-- 급여가 3000 이상이고, 부서가 20번이거나, 입사일이 82년 1월 1일 이전인 사원의 정보 출력
+SELECT * FROM EMP
+	WHERE sal >= 3000 AND (DEPTNO = 20 OR HIREDATE < '82/01/01');
+
+-- 급여가 2500 이상이고 직책이 MANAGER인 사원의 모든 정보 출력
+SELECT * FROM EMP
+	WHERE sal >= 2500 AND job = 'MANAGER';
+
+
+SELECT * FROM EMP 
+	WHERE job = 'MANAGER' OR job = 'SALESMAN' OR job = 'CLERK';
+	
+-- IN 연산자 : 여러개의 열 이름을 조회할 경우 연속해서 나열할 수 있음
+	
+SELECT * FROM EMP
+	WHERE job IN ('MANAGER', 'SALESMAN', 'CLERK');
+
+-- IN 연산자를 사용해서 20번과 30번 부서에 포함된 사원의 모든 정보 조회
+SELECT * FROM EMP 
+	WHERE DEPTNO IN (20, 30);
+
+-- NOT IN 연산자를 사용해 20번과 30번 부서에 포함된 사원의 모든 정보 조회
+SELECT * FROM EMP
+	WHERE DEPTNO NOT IN 10;
+
+-- 비교연산자와 AND 연산자를 사용하여 출력하기
+SELECT * FROM EMP
+	WHERE job != 'MANAGER' AND job <> 'SALESMAN' AND job ^= 'CLERK';
+
+
+
+-- 급여가 2000에서 3000사이의 사원의 모든 정보를 출력
+SELECT * FROM EMP 
+	WHERE sal >= 2000 AND sal <= 3000;
+
+-- BETWEEN A AND B 연산자 : 일정한 범위를 조회할 때 사용하는 연산자 : A 에서 B까지 
+SELECT * FROM EMP 
+	WHERE sal BETWEEN 2000 AND 3000;
+
+SELECT * FROM EMP 
+	WHERE SAL NOT BETWEEN 2000 AND 3000;
+
+-- 사원번호가 7689에서 7902까지의 사원의 모든 정보를 출력
+SELECT * FROM EMP 
+	WHERE empno BETWEEN 7689 AND 7902;
+
+-- 1980년이 아닌 해에 입사한 사원의 모든 정보를 출력
+SELECT * FROM EMP 
+	WHERE HIREDATE NOT BETWEEN '1980/01/01' AND '1980/12/31';
+
+-- LIKE, NOT LIKE 연산자 : 문자열을 검색할 때 사용하는 연산자
+-- % : 길이와 상관없이 모든 문자 데이터를 의미
+-- _ : 문자 1개를 의미
+SELECT ename FROM EMP 
+	WHERE ENAME LIKE '%K%';	
+	-- 앞과 뒤의 문자열 길에 상관없이 'K'라는 문자가 ename에 포함된 사원의 이름 출력
+
+-- 사원의 이름의 두 번째 글자가 L인 사원만 출력하기
+SELECT * FROM EMP 
+	WHERE ENAME LIKE '_L%';
+
+
+-- [실습] 사원 이름에 AM이 포함되어 있는 사원 데이터만 출력
+SELECT * FROM EMP  
+	WHERE ENAME LIKE '%AM%';
+
+-- [실습] 사원 이름에 AM이 포함되어 있지 않은 사원 데이터만 출력
+SELECT * FROM EMP 
+	WHERE ENAME NOT LIKE '%AM%';
+
+-- 와일드 카드 문자가 데이터 일부일 경우 (%, _) escape로 지정된 '\'뒤에오는 %, _는 와일드 카드가 아니라는 의미
+SELECT * FROM EMP 
+	WHERE ENAME LIKE '%\%S' ESCAPE '\';	-- 사원 이름 %P로 끝나는 사원을 조회
+
+INSERT INTO EMP(empno, ename, job, mgr, HIREDATE, sal, comm, deptno)
+	VALUES(1001, 'JAME%S','MANAGER',7839,'2024-10-15', 3500, 450, 30);
+
+-- is null 연산자 : 
+-- 데이터 값에는 NULL 값을 가질 수 있음, 값이 정해지지 않음을 의미, 연산불가(계산 비교, 할당)
+SELECT ename, sal, sal * 12 + COMM "연봉", COMM
+	FROM EMP;
+
+-- 비교연산으로  NULL 비교하기
+SELECT * FROM EMP 
+	WHERE comm = NULL; -- NULL은 비교 불가이므로 결과가 나오지 않음
+
+-- 해당 데이터가 NULL 인지 확인하는 방법은 IS NULL 연산자를 사용해야함.
+	
+SELECT * FROM EMP
+	WHERE comm IS NULL;
