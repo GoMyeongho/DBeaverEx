@@ -1,5 +1,6 @@
 #!/bin/sh
 
 git add .
-git commit -m 'date'
+date = 'date'
+git commit -m $date
 git push
