@@ -212,11 +212,13 @@ SELECT * FROM EMP
 SELECT empno, ename, JOB, sal, DEPTNO 
 	FROM EMP
 	WHERE deptno = 30 AND job = 'SALESMAN';
+
 -- [실습문제 3] 20번과 30번 부서에 근무하고 있는 사원 중 급여가 2000 초과인 사원의
 -- 사원번호, 이름, 직책, 급여, 부서번호 출력
 SELECT empno, ename, JOB, sal, DEPTNO 
 	FROM EMP
 	WHERE DEPTNO NOT IN 10 AND sal > 2000;
+
 -- [실습문제 4] 급여가 2000 이상 3000이하 범위 이외의 값을 가진 사원의 모든 정보 출력
 SELECT * FROM EMP 	
 	WHERE sal BETWEEN 2000 AND 3000;
@@ -237,8 +239,56 @@ SELECT * FROM EMP
 	AND job IN ('MANAGER', 'CLERK') 
 	AND ENAME NOT LIKE '_L%';	
 	
-	
-	
+-- SELECT 연습문제 --
+-- 1. EMP 테이블에서 COMM 의 값이 NULL이 아닌 정보 조회
+SELECT * FROM EMP 
+	WHERE comm IS NOT NULL;
+
+-- 2. EMP 테이블에서 커미션을 받지 못하는 직원 조회	
+SELECT * FROM EMP
+	WHERE comm IS NULL;
+-- 3. **EMP테이블에서 관리자가 없는 직원 정보 조회**
+SELECT * FROM EMP
+	WHERE MGR IS NULL;
+
+-- 4. **EMP테이블에서 급여를 많이 받는 직원 순으로 조회**
+SELECT * FROM EMP
+	ORDER BY sal DESC; 
+
+-- 5. **EMP테이블에서 급여가 같을 경우 커미션을 내림차순 정렬 조회**
+SELECT * FROM EMP 
+	ORDER BY sal DESC, comm DESC;
+
+-- 6. **EMP테이블에서 사원번호, 사원명, 직급, 입사일 조회 (단, 입사일을 오름차순 정렬 처리)**
+SELECT empno, ename, job, HIREDATE 
+	FROM EMP
+	ORDER BY HIREDATE;
+-- 7. **EMP테이블에서 사원번호, 사원명 조회 (사원번호 기준 내림차순 정렬)**
+SELECT empno, ename FROM EMP
+	ORDER BY empno DESC;
+
+-- 8. **EMP테이블에서 사번, 입사일, 사원명, 급여 조회  (부서번호가 빠른 순으로, 같은 부서번호일 때는 최근 입사일 순으로 처리)**
+SELECT empno, hiredate, ename, sal
+	FROM EMP
+	ORDER BY deptno, hiredate;
+
+-- 10. **EMP테이블에서 사번, 사원명, 급여 조회  
+SELECT empno, ename, sal FROM emp;
+-- 11. **EMP테이블에서 사원번호가 홀수인 사원들을 조회**
+SELECT * FROM emp
+	WHERE MOD(EMPNO,2) = 1; 
+-- 12. **EMP테이블에서 사원명, 입사일 조회
+SELECT ename, hiredate FROM emp;
+-- 14. **EMP테이블에서 81년도에 입사한 직원 조회**
+SELECT * FROM EMP
+	WHERE HIREDATE BETWEEN '81/01/01' AND '81/12/31';
+-- 15. **EMP테이블에서 이름이 'E'로 끝나는 직원 조회**
+SELECT * FROM EMP
+	WHERE ename LIKE '%E';
+-- 16. **EMP테이블에서 이름의 세 번째 글자가 'R'인 직원의 정보 조회**
+SELECT * FROM EMP
+	WHERE ename LIKE '__R%';
+
 	
 	
 	
