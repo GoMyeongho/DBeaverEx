@@ -49,7 +49,7 @@ SELECT empno, ename, job, sal
 -- 나중 내용
 SELECT e.ename, d.DEPTNO 
 	FROM EMP e JOIN DEPT d
-	ON e.DEPTNO = d.DEPTNO
+	ON e.DEPTNO = d.DEPTNO;
 -- 나중 내용
 
 SELECT * FROM EMP
@@ -174,3 +174,91 @@ SELECT * FROM EMP
 	
 SELECT * FROM EMP
 	WHERE comm IS NULL;
+
+-- 직속상관 있는 사원 데이터 출력
+SELECT * FROM EMP 
+	WHERE MGR IS NOT NULL;
+
+-- 정렬을 위한 ORDER BY 절 : 오름차순 또는 내림차순 정렬 가능
+SELECT * FROM EMP
+	ORDER BY sal ASC;  -- 급여에 대한 오름차순 정렬
+
+-- 사원번호 기준으로 내림차순 정렬하기
+SELECT * FROM EMP
+	ORDER BY EMPNO DESC;
+	
+-- 정렬 조건을 여러 컬럼을 설정하기
+SELECT * FROM EMP 
+	ORDER BY sal DESC, ENAME; -- 급여가 많은 사람 순으로 정렬하고 급여가 같으면 이름순 정렬하기
+
+-- 별칭 사용과 ORDER BY
+SELECT empno 사원번호, ename 사원명, sal 월급, hiredate 입사일	-- 3. 가져올 컬럼까지 골라냄
+	FROM EMP	-- 1. 먼저 테이블을 가져옴
+	WHERE sal >= 1000	-- 2. 해당 조건에 맞는 행(튜플)을 가져옴
+	ORDER BY 월급 DESC, 사원명;		-- 4. 가져온것을 분류함, 꼭 필요한 경우 아니면 x
+
+	
+-- 연결 연산자 : SELECT문 조회 시 컬럼 사이에 특정한 문자를 넣을 때 사용
+SELECT ename || '의 직책은 ' || job "사원 정보"
+	FROM emp;
+
+	
+-- [실습문제 1] 사원 이름이 S로 끝나는 사원 데이터를 모두 출력
+SELECT * FROM EMP 
+	WHERE ENAME LIKE '%S';
+	
+-- [실습문제 2] 30번 부서에 근무하고 있는 사원 중, 직책이 SALESMAN인 사원의 
+-- 사원번호, 이름, 직책, 급여, 부서번호 출력
+SELECT empno, ename, JOB, sal, DEPTNO 
+	FROM EMP
+	WHERE deptno = 30 AND job = 'SALESMAN';
+-- [실습문제 3] 20번과 30번 부서에 근무하고 있는 사원 중 급여가 2000 초과인 사원의
+-- 사원번호, 이름, 직책, 급여, 부서번호 출력
+SELECT empno, ename, JOB, sal, DEPTNO 
+	FROM EMP
+	WHERE DEPTNO NOT IN 10 AND sal > 2000;
+-- [실습문제 4] 급여가 2000 이상 3000이하 범위 이외의 값을 가진 사원의 모든 정보 출력
+SELECT * FROM EMP 	
+	WHERE sal BETWEEN 2000 AND 3000;
+	
+-- [실습문제 5] 사원 이름에 E가 포함되어 있는 30번 부서의 사원 중 
+-- 급여가 1000 ~ 2000 사이가 아닌 사원의 이름, 번호, 급여, 부서번호 출력
+SELECT empno, ename, JOB, sal, DEPTNO 
+	FROM EMP
+	WHERE sal NOT BETWEEN 1000 AND 2000	
+	AND ename LIKE '%E%' 
+	AND deptno = 30;
+	
+-- [실습문제 6] 추가 수당이 존재하지 않고, 상급자가 존재하고, 직책이 MANAGER, CLERK인 사원중
+-- 사원 이름의 두 번째 글자가 L이 아닌 사원의 모든 정보를 출력
+SELECT * FROM EMP 
+	WHERE comm IS NULL 
+	AND MGR IS NOT NULL 
+	AND job IN ('MANAGER', 'CLERK') 
+	AND ENAME NOT LIKE '_L%';	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
