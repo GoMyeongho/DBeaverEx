@@ -289,6 +289,7 @@ SELECT * FROM EMP
 SELECT * FROM EMP
 	WHERE ename LIKE '__R%';
 
+
 	
 	
 	
