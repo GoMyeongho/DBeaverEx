@@ -263,6 +263,7 @@ SELECT * FROM EMP
 SELECT empno, ename, job, HIREDATE 
 	FROM EMP
 	ORDER BY HIREDATE;
+
 -- 7. **EMP테이블에서 사원번호, 사원명 조회 (사원번호 기준 내림차순 정렬)**
 SELECT empno, ename FROM EMP
 	ORDER BY empno DESC;
@@ -274,24 +275,37 @@ SELECT empno, hiredate, ename, sal
 
 -- 10. **EMP테이블에서 사번, 사원명, 급여 조회  
 SELECT empno, ename, sal FROM emp;
+
 -- 11. **EMP테이블에서 사원번호가 홀수인 사원들을 조회**
 SELECT * FROM emp
 	WHERE MOD(EMPNO,2) = 1; 
+
 -- 12. **EMP테이블에서 사원명, 입사일 조회
 SELECT ename, hiredate FROM emp;
+
 -- 14. **EMP테이블에서 81년도에 입사한 직원 조회**
 SELECT * FROM EMP
 	WHERE HIREDATE BETWEEN '81/01/01' AND '81/12/31';
+
 -- 15. **EMP테이블에서 이름이 'E'로 끝나는 직원 조회**
 SELECT * FROM EMP
 	WHERE ename LIKE '%E';
+
 -- 16. **EMP테이블에서 이름의 세 번째 글자가 'R'인 직원의 정보 조회**
 SELECT * FROM EMP
 	WHERE ename LIKE '__R%';
 
+-- 9월 입사자만 출력 : 안배운 문법 사용
+SELECT * FROM EMP
+	WHERE EXTRACT (MONTH FROM hiredate) = 9;
 
-	
-	
+-- EMP 테이블에서 사번, 사원명, 입사일, 입사일로부터 40년 되는 날짜 조회
+SELECT empno, ename, hiredate, ADD_MONTHS(hiredate, 12*40) -- 특정 날짜에 계월수을 더해 새로운 날짜를 만들어냄
+	FROM emp;
+
+-- 오늘 날짜에서 연도만 출력
+SELECT EXTRACT (YEAR FROM sysdate)
+	FROM dual; 
 	
 	
 	
