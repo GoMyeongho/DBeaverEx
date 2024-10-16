@@ -71,20 +71,59 @@ SELECT job, SUBSTR(job, 1, 2), SUBSTR(job, 3, 2), SUBSTR(job,5)
 	FROM EMP;  
 
 -- SUBSTR 함수와 다른 함수 함께 사용
+SELECT job,
+	SUBSTR(job, -LENGTH(job)),
+	SUBSTR(job, -LENGTH(job),2),
+	SUBSTR(job, -3)
+	FROM EMP;
+
+-- INSTR : 문자열 데이터 안에 특정 문자나 문자열이 어디에 포함되어 있는지를 알고자 할 때 사용
+SELECT INSTR('HELLO, ORACLE', 'L') AS INSTR_1,	-- 'L'문자의 위치 : 3
+	INSTR('HELLO, ORACLE', 'L', 5) AS INSTR_2,	-- 5번째 위치에서 시작해서 L문자의 위치 찾기 : 12
+	INSTR('HELLO, ORACLE', 'L', 2, 2) AS INSTR_3,
+	INSTR('S','O') AS INSTR_0
+	-- 2번째 위치에서 시작해서 2번째 나타나는 문자의 위치 찾기 : 4
+	FROM dual; 
+	
+
+-- 특정 문자가 포함된 행 찾기
+SELECT * FROM emp
+	WHERE INSTR(ename, 'S') > 0;	-- LIKE 대신 'S'라는 문자가 포함된 행 출력
 
 
 
+SELECT * FROM EMP
+	WHERE ename LIKE '%S%';
+
+-- REPLACE : 특정 문자열 데이터에 포함된 문자를 다른 문자로 대체 할 때 사용 
+-- 대체할 문자를 지정하지 않으면 삭제
+SELECT '010-5006-4146' AS "변경 이전",
+	REPLACE('010-5006-4146', '-', '/') AS  "변경 이후 1",
+	REPLACE('010-5006-4146', '-') AS  "변경 이후 2"
+	FROM dual;
+
+-- LPAD / RPAD : 기준 공간 칸수를 지정하고 빈칸 만큼을 특정 문자로 채우는 함수
+SELECT LPAD('ORACLE', 10, '+') LPAD,
+	RPAD('ORACLE', 10, '+') RPAD 
+FROM dual;
+
+SELECT RPAD('010203-', 14, '*') AS RPAD_JUMIN,
+	RPAD('010-5006-', 13, '*') AS RPAD_PHONE
+	FROM dual;
+	
+
+-- 두 문자열을 합치는 concat 함수
+SELECT CONCAT(empno, ename) "사원정보",
+	CONCAT(empno,CONCAT(' : ', ename)) "사원정보:"
+	FROM EMP 
+	WHERE ename = 'JAMES';
 
 
-
-
-
-
-
-
-
-
-
+-- TRIM / LTRIM / RTRIM : 문자열 데이터에서 특정 문자를 지우기 위해 사용, 문자를 지정하지 않으면 공백제거
+SELECT '['||TRIM('  _ORACLE_  ') || ']' AS TRIM,
+	'['||LTRIM('  _ORACLE_  ') || ']' AS LTRIM,
+	'['||RTRIM('  _ORACLE_  ') || ']' AS RTRIM
+FROM dual;
 
 
 
