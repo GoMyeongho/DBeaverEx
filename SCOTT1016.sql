@@ -308,8 +308,8 @@ SELECT empno,
 
 -- 2
 SELECT empno, ename, sal,
-	ROUND(sal / 21.5,2) AS DAY_PAY,
-	ROUND(sal / (8 * 21.5),1) AS TIME_PAY
+	TRUNC(sal / 21.5, 2) AS DAY_PAY,
+	ROUND(sal / (8 * 21.5), 1) AS TIME_PAY
 	FROM emp;
 
 -- 3
