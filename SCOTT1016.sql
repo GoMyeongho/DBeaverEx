@@ -278,4 +278,72 @@ SELECT empno, ename, comm,
 		END AS "수당 정보"
 	FROM emp;
 	
-	
+-- 1. EMP 테이블에서 사번, 사원명, 급여 조회 
+-- (단, 급여는 100단위까지의 값만 출력 처리하고 급여 기준 내림차순 정렬)
+SELECT empno, ename, 
+		TRUNC(sal,-2)
+	FROM EMP
+	ORDER BY sal desc;
+-- 2. EMP 테이블에서 9월에 입사한 직원의 정보 조회
+SELECT * FROM EMP
+	WHERE EXTRACT(MONTH FROM hiredate) = 9;
+
+-- 3. EMP 테이블에서 사번, 사원명, 입사일, 입사일로부터 40년 되는 날짜 조회
+SELECT empno, ename, hiredate,
+		ADD_MONTHS(hiredate, 12 * 40)
+	FROM EMP;
+
+-- 4. EMP 테이블에서 입사일로부터 38년 이상 근무한 직원의 정보 조회
+SELECT * FROM EMP
+	WHERE MONTHS_BETWEEN(SYSDATE, hiredate) > 12 * 38;
+
+
+-- 1
+SELECT empno,
+	RPAD(SUBSTR(empno, 1, 2),4,'*') AS MASKING_EMPNO,
+	ename,
+	RPAD(SUBSTR(ename, 1, 1),5,'*') AS MASKING_ENAME
+	FROM EMP
+	WHERE LENGTH(ename) = 5;
+
+-- 2
+SELECT empno, ename, sal,
+	ROUND(sal / 21.5,2) AS DAY_PAY,
+	ROUND(sal / (8 * 21.5),1) AS TIME_PAY
+	FROM emp;
+
+-- 3
+SELECT empno, ename, hiredate,
+	TO_CHAR(NEXT_DAY(ADD_MONTHS(hiredate, 3), '월요일'),'YYYY-MM-DD') AS R_JOB,
+	NVL(TO_CHAR(comm),'N/A') AS COMM
+	FROM emp;
+
+-- 4
+SELECT empno, ename, mgr,
+	CASE NVL(SUBSTR(mgr, 1, 2), 'NULL')
+		WHEN '75' THEN '5555'
+		WHEN '76' THEN '6666'
+		WHEN '77' THEN '7777'
+		WHEN '78' THEN '8888'
+		WHEN 'NULL' THEN '0000'
+		ELSE TO_CHAR(mgr)
+		END AS CHG_MGR
+	FROM EMP;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
