@@ -90,22 +90,23 @@ GROUP BY DEPTNO, JOB
 -- 2. EMP 테이블을 이용하여 부서번호, 평균급여, 최고급여, 최저급여, 사원수를 출력,
 -- 단, 평균 급여를 출력 할 때는 소수점 제외하고 부서 변호별로 출력
 
-SELECT deptno, TRUNC(avg(sal)), max(sal), min(sal), count(deptno)
+SELECT deptno, TRUNC(avg(sal)) AS "평균 급여", max(sal) AS "최고 급여", 
+	min(sal) AS "최소 급여", count(*) AS "사원수"
 FROM EMP
-GROUP BY DEPTNO;
-
+GROUP BY DEPTNO
+ORDER BY deptno;
 
 -- 3. 같은 직책에 종사하는 사원이 3명 이상인 직책과 인원을 출력
 
-SELECT deptno, count(deptno)
+SELECT deptno, count(*) AS "사원수"
 FROM EMP
 GROUP BY DEPTNO
-	HAVING count(DEPTNO) >= 3;
+	HAVING count(*) >= 3;
 
 
 -- 4. 사원들의 입사 연도를 기준으로 부서별로 몇 명이 입사했는지 출력
 
-SELECT deptno, EXTRACT(YEAR FROM hiredate), count(deptno)
+SELECT deptno, EXTRACT(YEAR FROM hiredate) AS "입사 연도", count(*) AS "사원수"
 FROM EMP
 GROUP BY deptno, EXTRACT(YEAR FROM hiredate)
 ORDER BY EXTRACT(YEAR FROM hiredate), deptno;
@@ -113,21 +114,34 @@ ORDER BY EXTRACT(YEAR FROM hiredate), deptno;
 
 -- 5. 추가 수당을 받는 사원 수와 받지 않는 사원 수를 출력 (O, X 로 표기 필요)
 
-SELECT deptno, NVL2(comm,'O','X'), count(deptno)
+SELECT deptno, NVL2(comm,'O','X') AS "추가 수당 유 / 무", count(*) AS "사원수"
 FROM EMP
 GROUP BY deptno, NVL2(comm,'O','X');
 
 
 -- 6. 각 부서의 입사 연도별 사원 수, 최고 급여, 급여 합, 평균 급여를 출력
 
-SELECT deptno, EXTRACT(YEAR FROM hiredate), count(deptno), max(sal), sum(sal), TRUNC(avg(sal))
+SELECT deptno, EXTRACT(YEAR FROM hiredate) AS "입사 연도", count(*) AS "사원수", 
+	max(sal) AS "최고 급여", sum(sal) AS "급여 합", TRUNC(avg(sal)) AS "평균 급여"
 FROM EMP
 GROUP BY DEPTNO, EXTRACT(YEAR FROM hiredate);
 
 
 
 
-
+SELECT deptno, 
+CASE 
+	WHEN comm IS NULL THEN 'X'
+	WHEN comm = 0 THEN 'X'
+	ELSE 'O'
+END AS "추가 수당 유 / 무",
+count(*) AS "사원수"
+FROM EMP
+GROUP BY deptno, CASE 
+	WHEN comm IS NULL THEN 'X'
+	WHEN comm = 0 THEN 'X'
+	ELSE 'O'
+END;
 
 
 
