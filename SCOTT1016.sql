@@ -320,13 +320,13 @@ SELECT empno, ename, hiredate,
 
 -- 4
 SELECT empno, ename, mgr,
-	CASE NVL(SUBSTR(mgr, 1, 2), 'NULL')
-		WHEN '75' THEN '5555'
-		WHEN '76' THEN '6666'
-		WHEN '77' THEN '7777'
-		WHEN '78' THEN '8888'
-		WHEN 'NULL' THEN '0000'
-		ELSE TO_CHAR(mgr)
+		CASE NVL(SUBSTR(mgr, 1, 2), 'NULL')
+			WHEN '75' THEN '5555'
+			WHEN '76' THEN '6666'
+			WHEN '77' THEN '7777'
+			WHEN '78' THEN '8888'
+			WHEN 'NULL' THEN '0000'
+			ELSE TO_CHAR(mgr)
 		END AS CHG_MGR
 	FROM EMP;
 
