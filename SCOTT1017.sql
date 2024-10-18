@@ -143,6 +143,77 @@ GROUP BY deptno, CASE
 	ELSE 'O'
 END;
 
+-- 그룹화 관련 기타 함수 : ROLLUP
+SELECT NVL(TO_CHAR(deptno),'전체 부서') AS "부서번호",
+	NVL(job,'부서별 직책') AS "직책",
+	COUNT(*) AS "사원수",
+	MAX(sal) AS "최대 급여",
+	MIN(sal) AS "최대 급여",
+	ROUND(AVG(sal)) AS "평균 급여"
+FROM EMP
+GROUP BY ROLLUP (deptno, job)
+ORDER BY "부서번호", "직책";
+
+
+-- 집합 연산자 : 두개 이상의 쿼리 결과를 하나로 결합하는 연산자(수직적 처리)
+-- 여러개의 SELECT 문을 하나로 연결하는 기능
+-- 집합 연산자로 결합하는 결과의 컬럼은 데이터 타입이 동일해야 한다.(열의 개수도 동일해야 함)
+-- 합집합 : UNION
+SELECT empno, ename, sal, deptno
+FROM EMP
+WHERE deptno = 10
+UNION 
+SELECT empno, ename, sal, deptno
+FROM EMP
+WHERE deptno = 20
+UNION
+SELECT empno, ename, sal, deptno
+FROM EMP
+WHERE deptno = 30;
+
+
+-- 교집합 : INTERSECT
+-- 여러 개의 SQL문의 결과에 대한 교집합을 반환
+SELECT empno, ename, sal
+FROM EMP
+WHERE sal > 1000	-- 1001 ~
+INTERSECT 			-- 1001 ~ 1999
+SELECT empno, ename, sal
+FROM EMP
+WHERE sal < 2000;	-- ~ 1999
+
+-- 차집합 : MINUS, 중복행에 대한 결과를 하나의 결과로 보여줌
+
+SELECT empno, ename, sal
+FROM EMP
+MINUS
+SELECT empno, ename, sal
+FROM EMP
+WHERE sal > 2000;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
