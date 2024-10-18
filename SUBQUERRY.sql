@@ -126,24 +126,170 @@ WHERE sal < ALL (
 );
 
 
+-- 직책이 'MANAGER'인 사원 보다 많은 급여 받는 사원의 사원번호, 이름, 급여, 부서 이름 출력하기 
+
+SELECT empno, ename, dname
+FROM EMP e JOIN DEPT d
+ON e.DEPTNO = d.DEPTNO 
+WHERE sal > ALL (
+	SELECT sal
+	FROM EMP
+	WHERE job = 'MANAGER'
+);
+
+-- EXISTS : 서브 쿼리의 결과 값이 하나 이상 존재하면 true
+SELECT *
+FROM EMP e 
+WHERE EXISTS (
+	SELECT dname
+	FROM DEPT
+	WHERE deptno = 40
+);
+
+	
+-- 다중 열 서브 쿼리 : 서브 쿼리의 결과값이 두개 이상의 컬럼으로 반환되어 메인 쿼리에 전달하는 쿼리
+	
+SELECT empno, ename, sal, deptno
+FROM emp
+WHERE (deptno, sal) IN (
+	SELECT DEPTNO , SAL 
+	FROM EMP 
+	WHERE deptno = 30
+);
+
+SELECT *
+FROM EMP
+WHERE (DEPTNO, sal ) IN (
+	SELECT DEPTNO , MAX(sal)
+	FROM EMP
+	GROUP BY DEPTNO 
+);
 
 
+-- FROM 절에 사용하는 서브 쿼리 : 인라인 뷰라고 하기도 함
+-- 테이블 내 데이터 규모가 너무 크거나 현재 작업에
+-- 불필요한 열이 너무 많아 일부 행과 열만 사용하고자 할 때 유용
+SELECT empno, ename, d.deptno, dname, loc
+FROM (
+	SELECT empno, ename, deptno
+	FROM emp
+	WHERE deptno = 10) e
+JOIN DEPT d 
+ON e.deptno = d.DEPTNO;
 
 
+-- 먼저 정렬하고 해당 갯수만 가져오기 : 급여가 많은 5명에 대한 정보 보여줘
+
+SELECT ROWNUM, ename, sal
+FROM (
+	SELECT * 
+	FROM EMP 
+	ORDER BY sal DESC
+)
+WHERE ROWNUM <= 5;
 
 
+-- SELECT 절에 사용하는 서브 쿼리 : 단일행 서브 쿼리를 스칼라 서브 쿼리
+-- SELECT 절에 명시하는 서브 쿼리는 반드시 하나의 결과만 반환하도록 작성해야 함 
+
+SELECT empno, ename, job, sal, 
+	(
+		SELECT grade 
+		FROM SALGRADE
+		WHERE e.sal BETWEEN losal AND hisal
+	) AS "급여 등급",
+	deptno AS "부서 번호",
+	(
+		SELECT dname
+		FROM dept d
+		WHERE e.deptno = d.DEPTNO
+	) AS "부서 이름"
+FROM EMP e
+ORDER BY "급여 등급";
 
 
+-- 조인문으로 변경하기
+
+SELECT e.empno, e.ename, e.job, e.sal, s.grade, d.deptno, d.dname
+FROM EMP e 
+JOIN SALGRADE s
+ON sal BETWEEN losal AND hisal
+JOIN DEPT d 
+ON e.DEPTNO = d.DEPTNO 
+ORDER BY GRADE;
+
+-- 부서 위치가 NEW YORK 인 경우에는 본사, 그 외에는 분점으로 내용반환하기
+
+SELECT empno, ename, 
+	CASE
+		WHEN deptno = (
+			SELECT deptno
+			FROM DEPT
+			WHERE loc = 'NEW YORK'
+			) THEN '본사'
+			ELSE '분점'
+	END AS "소속"
+FROM EMP 
+ORDER BY "소속"; 
 
 
+-- 1. 전체 사원 중 ALLEN과 같은 직책(JOB)인 사원들의 사원 정보, 부서 정보 출력
+
+SELECT job, empno, ename, sal, e.deptno, dname
+FROM EMP e JOIN DEPT d 
+ON e.DEPTNO = d.DEPTNO 
+WHERE job = (
+	SELECT job FROM EMP
+	WHERE ename = 'ALLEN'
+);
+
+-- 2. 전체 사원의 평균 급여(SAL)보다 높은 급여를 받는 사원들의 사원 정보, 부서 정보, 급여 등급 정보를 출력
+-- (단 출력할 때 급여가 많은 순으로 정렬하되 급여가 같을 경우에는 
+-- 사원 번호를 기준으로 오름차순으로 정렬하세요).
+
+SELECT empno, ename, dname, TO_CHAR(hiredate,'YY/MM/DD') AS Hiredate, loc, sal, grade
+FROM EMP e 
+JOIN DEPT d 
+ON e.DEPTNO = d.DEPTNO
+JOIN SALGRADE s 
+ON sal BETWEEN losal AND hisal
+WHERE sal > (
+	SELECT avg(sal)
+	FROM EMP
+)
+ORDER BY sal DESC, empno;
+
+-- 3. 10번 부서에 근무하는 사원 중 30번 부서에는 존재하지 않는 직책을 가진 
+-- 사원들의 사원 정보, 부서 정보를 다음과 같이 출력하는 SQL문을 작성하세요.
+
+SELECT empno, ename, job, d.deptno, dname, loc
+FROM EMP e 
+JOIN DEPT d 
+ON e.DEPTNO = d.DEPTNO
+WHERE e.deptno = 10 
+AND job NOT IN ( 
+	SELECT DISTINCT job	-- DISTINCT : 중복제거
+	FROM EMP
+	WHERE deptno = 30);
 
 
+-- 4. 직책이 SALESMAN인 사람들의 최고 급여보다 높은 급여를 받는 사원들의 사원 정보, 급여 등급 정보 출력
+-- (단 서브쿼리를 활용할 때 다중행 함수를 사용하는 방법과 사용하지 않는 방법을 통해 
+-- 사원 번호를 기준으로 오름차순으로 정렬하세요).
 
-
-
-
-
-
+SELECT empno, ename, sal, grade
+FROM EMP e 
+JOIN SALGRADE s 
+ON sal BETWEEN losal AND hisal
+WHERE sal > ALL(
+	SELECT sal
+	FROM EMP
+	WHERE job ='SALESMAN')
+-- WHERE sal > (
+--	SELECT MAX(sal)
+--	FROM EMP
+--	WHERE job ='SALESMAN')
+ORDER BY empno;
 
 
 
